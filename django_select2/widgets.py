@@ -10,6 +10,7 @@ from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import MultiValueDict, MergeDict
+from django.contrib.admin.templatetags.admin_static import static
 
 from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext, \
     convert_dict_to_js_map, convert_to_js_arr
@@ -571,3 +572,80 @@ class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
     pass
+
+
+### With plus widgets ###
+
+
+class PlusSelect2Mixin(object):
+    """
+    Select2 "plus" mixin
+    """
+    def __init__(self, **kwargs):
+        self.can_add_related = kwargs.pop('can_add_related', None)
+        super(PlusSelect2Mixin, self).__init__(**kwargs)
+
+    def js_extra(self, id_):
+        """
+        JS extra
+        :param id_:
+        :return: string
+        """
+        return """
+           $(window).bind(
+               'focus', function(){
+                    $('#%s').val($('#%s').val()).trigger("change")
+               }
+           )
+        """ % (id_, id_)
+
+    def get_add_link(self, name):
+        """
+        Adds "plus" link
+        """
+        link = []
+        if self.can_add_related:
+            rel_to = self.choices.queryset.model
+            info = (rel_to._meta.app_label, rel_to._meta.object_name.lower())
+            related_url = reverse('admin:%s_%s_add' % info, current_app='admin')
+            link.append(u'<a href="%s" class="add-another" id="add_id_%s" '
+                        u'onclick="return showAddAnotherPopup(this);"> ' % (
+                            related_url, name))
+
+            link.append(u'<img src="%s" width="10" height="10" alt="%s"/></a>' % (
+                static('admin/img/icon_addlink.gif'),
+                _('Add Another')))
+        return link
+
+    def render_inner_js_code(self, id_, *args):
+        """
+        Renders required JS code
+        """
+        js = """
+           %s
+           %s
+        """ % (
+            super(PlusSelect2Mixin, self).render_inner_js_code(
+                id_, *args),
+            self.js_extra(id_))
+        return js
+
+    def render(self, name, value, attrs=None, choices=()):
+        """
+        Rendering
+        """
+        output = super(PlusSelect2Mixin, self).render(
+            name, value, attrs, choices)
+        return output + mark_safe(u''.join(self.get_add_link(name)))
+
+
+class PlusSelect2MultipleWidget(PlusSelect2Mixin, Select2MultipleWidget):
+    """
+    Select2MultipleWidget with "plus"
+    """
+
+
+class PlusSelect2Widget(PlusSelect2Mixin, Select2Widget):
+    """
+    Select2MultipleWidget with "plus"
+    """
