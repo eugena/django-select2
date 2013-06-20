@@ -574,7 +574,7 @@ class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2Multiple
     pass
 
 
-### With plus widgets ###
+### Widgets with "plus" ###
 
 
 class PlusSelect2Mixin(object):
@@ -647,5 +647,5 @@ class PlusSelect2MultipleWidget(PlusSelect2Mixin, Select2MultipleWidget):
 
 class PlusSelect2Widget(PlusSelect2Mixin, Select2Widget):
     """
-    Select2MultipleWidget with "plus"
+    Select2Widget with "plus"
     """
