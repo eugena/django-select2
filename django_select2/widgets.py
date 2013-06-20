@@ -10,6 +10,7 @@ from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import MultiValueDict, MergeDict
+from django.utils.translation import ugettext as _
 from django.contrib.admin.templatetags.admin_static import static
 
 from .util import render_js_script, convert_to_js_string_arr, JSVar, JSFunction, JSFunctionInContext, \
