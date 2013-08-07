@@ -650,3 +650,18 @@ class PlusSelect2Widget(PlusSelect2Mixin, Select2Widget):
     """
     Select2Widget with "plus"
     """
+
+
+class PlusAutoHeavySelect2Widget(PlusSelect2Mixin, AutoHeavySelect2Widget):
+    """
+    AutoHeavySelect2Widget with "plus"
+    """
+    pass
+
+
+class PlusAutoHeavySelect2MultipleWidget(PlusSelect2Mixin, AutoHeavySelect2MultipleWidget):
+    """
+    AutoHeavySelect2MultipleWidget with "plus"
+    """
+    pass
+
