@@ -103,7 +103,8 @@ try:
             __ENABLE_MULTI_PROCESS_SUPPORT = False
 
         from .widgets import Select2Widget, Select2MultipleWidget, HeavySelect2Widget, HeavySelect2MultipleWidget, \
-            AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget, PlusSelect2Widget, PlusSelect2MultipleWidget
+            AutoHeavySelect2Widget, AutoHeavySelect2MultipleWidget, PlusSelect2Widget, PlusSelect2MultipleWidget, \
+            PlusAutoHeavySelect2Widget, PlusAutoHeavySelect2MultipleWidget
         from .fields import Select2ChoiceField, Select2MultipleChoiceField, HeavySelect2ChoiceField, \
             HeavySelect2MultipleChoiceField, HeavyModelSelect2ChoiceField, HeavyModelSelect2MultipleChoiceField, \
             ModelSelect2Field, ModelSelect2MultipleField, AutoSelect2Field, AutoSelect2MultipleField, \
