@@ -577,14 +577,7 @@ class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2Multiple
 
 ### Widgets with "plus" ###
 
-
-class PlusSelect2Mixin(object):
-    """
-    Select2 "plus" mixin
-    """
-    def __init__(self, **kwargs):
-        self.can_add_related = kwargs.pop('can_add_related', None)
-        super(PlusSelect2Mixin, self).__init__(**kwargs)
+class PlusJSMixin(object):
 
     def js_extra(self, id_):
         """
@@ -595,10 +588,39 @@ class PlusSelect2Mixin(object):
         return """
            $(window).bind(
                'focus', function(){
-                    $('#%s').val($('#%s').val()).trigger("change")
+                    $('#%s').data($('#%s').data()).trigger("change")
                }
            )
         """ % (id_, id_)
+
+class PlusJSHavyMixin(object):
+
+    def js_extra(self, id_):
+        """
+        JS extra
+         Working with elem.setAttribute("txt", newRepr); in RelatadObjectLookups
+        :param id_:
+        :return: string
+        """
+        return """
+           $(window).bind(
+               'focus', function(){
+                    $('#%s').select2(
+                    "data", {
+                        id: $('#%s').attr('value'),
+                        text: $('#%s').attr('txt')});
+               }
+           )
+        """ % (id_, id_, id_)
+
+class PlusSelect2Mixin(object):
+    """
+    Select2 "plus" mixin
+    """
+    def __init__(self, **kwargs):
+        self.can_add_related = kwargs.pop('can_add_related', None)
+        self.model = kwargs.pop('model', None)
+        super(PlusSelect2Mixin, self).__init__(**kwargs)
 
     def get_add_link(self, name):
         """
@@ -606,7 +628,10 @@ class PlusSelect2Mixin(object):
         """
         link = []
         if self.can_add_related:
-            rel_to = self.choices.queryset.model
+            if self.model:
+                rel_to = self.model
+            else:
+                rel_to = self.choices.queryset.model
             info = (rel_to._meta.app_label, rel_to._meta.object_name.lower())
             related_url = reverse('admin:%s_%s_add' % info, current_app='admin')
             link.append(u'<a href="%s" class="add-another" id="add_id_%s" '
@@ -640,26 +665,26 @@ class PlusSelect2Mixin(object):
         return output + mark_safe(u''.join(self.get_add_link(name)))
 
 
-class PlusSelect2MultipleWidget(PlusSelect2Mixin, Select2MultipleWidget):
+class PlusSelect2MultipleWidget(PlusJSMixin, PlusSelect2Mixin, Select2MultipleWidget):
     """
     Select2MultipleWidget with "plus"
     """
 
 
-class PlusSelect2Widget(PlusSelect2Mixin, Select2Widget):
+class PlusSelect2Widget(PlusJSMixin, PlusSelect2Mixin, Select2Widget):
     """
     Select2Widget with "plus"
     """
 
 
-class PlusAutoHeavySelect2Widget(PlusSelect2Mixin, AutoHeavySelect2Widget):
+class PlusAutoHeavySelect2Widget(PlusJSHavyMixin, PlusSelect2Mixin, AutoHeavySelect2Widget):
     """
     AutoHeavySelect2Widget with "plus"
     """
     pass
 
 
-class PlusAutoHeavySelect2MultipleWidget(PlusSelect2Mixin, AutoHeavySelect2MultipleWidget):
+class PlusAutoHeavySelect2MultipleWidget(PlusJSHavyMixin, PlusSelect2Mixin, AutoHeavySelect2MultipleWidget):
     """
     AutoHeavySelect2MultipleWidget with "plus"
     """
