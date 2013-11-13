@@ -605,7 +605,7 @@ class PlusJSHavyMixin(object):
         return """
            $(window).bind(
                'focus', function() {
-                    if (typeof($('#id_user').attr('txt')) != "undefined") {
+                    if (typeof($('#%s').attr('txt')) != "undefined") {
                         $('#%s').select2(
                             "data", {
                                 id: $('#%s').attr('value'),
@@ -613,7 +613,7 @@ class PlusJSHavyMixin(object):
                     }
                 }
            )
-        """ % (id_, id_, id_)
+        """ % (id_, id_, id_, id_)
 
 class PlusSelect2Mixin(object):
     """
