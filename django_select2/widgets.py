@@ -604,12 +604,14 @@ class PlusJSHavyMixin(object):
         """
         return """
            $(window).bind(
-               'focus', function(){
-                    $('#%s').select2(
-                    "data", {
-                        id: $('#%s').attr('value'),
-                        text: $('#%s').attr('txt')});
-               }
+               'focus', function() {
+                    if (typeof($('#id_user').attr('txt')) != "undefined") {
+                        $('#%s').select2(
+                            "data", {
+                                id: $('#%s').attr('value'),
+                                text: $('#%s').attr('txt')});
+                    }
+                }
            )
         """ % (id_, id_, id_)
 
